@@ -4,21 +4,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Racing Demo</title>
-    <style>
-        canvas {
-            background: #222;
-            display: block;
-            margin: 0 auto;
-            border: 2px solid #fff;
-        }
-    </style>
+    <title>Track Racing Game</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <div class="content">
+        <canvas id="game" width="800" height="600"></canvas>
+        <div id="hud">
+            <div class="tabs">
+                <button id="tab1" class="active">🚗 Properties</button>
+                <button id="tab2">🤖 AI AGENT</button>
+                <button id="tab3">🏁 Track</button>
+            </div>
+            <div class="tab-content active" id="tab1-content">
+                <h2>Car Properties</h2>
+                <div class="property">
+                    <label for="carColor">Car Color (<span id="colorVal"></span>):</label>
+                    <input type="color" id="carColor" value="#ff0000">
+                </div>
+                <div class="property">
+                    <label for="carWidth">Car Width (<span id="widthVal"></span>):</label>
+                    <input type="range" id="carWidth" value="50" min="10" max="100">
+                </div>
+                <div class="property">
+                    <label for="carHeight">Car Height (<span id="heightVal"></span>):</label>
+                    <input type="range" id="carHeight" value="30" min="10" max="100">
+                </div>
+                <h2>Car Stats</h2>
+                <div class="stat">Speed: <span id="speed">0</span></div>
+                <div class="stat">Angle: <span id="angle">0</span></div>
+            </div>
+            <div class="tab-content" id="tab2-content">
+                <h2>AI Agent // TODO</h2>
+            </div>
+            <div class="tab-content" id="tab3-content">
+                <h2>Choose a track // todo</h2>
+                <button id="createTrack">Create Custom Track</button>
+                <div id="track-controls">
+                    <button class="toggle-edge">Switch to Outer Edge</button>
+                    <button class="reset-track">Reset</button>
+                    <button class="close-loop">Close Loop</button>
+                </div>
 
-    <script src="game.js"></script>
+            </div>
+        </div>
+
+        <script src="game.js"></script>
 </body>
 
 </html>

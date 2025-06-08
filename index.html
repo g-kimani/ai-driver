@@ -5,19 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track Racing Game</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
     <div class="content">
-        <canvas id="game" width="800" height="600"></canvas>
+        <canvas id="game"></canvas>
         <div id="hud">
             <div class="tabs">
-                <button id="tab1" class="active">🚗 Properties</button>
+                <button id="tab1">🚗 Properties</button>
                 <button id="tab2">🤖 AI AGENT</button>
-                <button id="tab3">🏁 Track</button>
+                <button id="tab3" class="active">🏁 Tracks</button>
             </div>
-            <div class="tab-content active" id="tab1-content">
+            <div class="tab-content" id="tab1-content">
                 <h2>Car Properties</h2>
                 <div class="property">
                     <label for="carColor">Car Color (<span id="colorVal"></span>):</label>
@@ -38,19 +38,35 @@
             <div class="tab-content" id="tab2-content">
                 <h2>AI Agent // TODO</h2>
             </div>
-            <div class="tab-content" id="tab3-content">
+            <div class="tab-content active" id="tab3-content">
                 <h2>Choose a track // todo</h2>
-                <button id="createTrack">Create Custom Track</button>
-                <div id="track-controls">
+                <button id="createTrack">Create Track</button>
+                <button id="cancelTrack" class="hidden">Cancel Track</button>
+                <div id="trackLabel" class="hidden"><label for="trackName">Track Name:</label>
+                    <input type="text" id="trackName" placeholder="Enter track name">
+                </div>
+                <div id="track-controls" class="hidden">
+                    <p>Drawing: <span id="edge-type">Inner Edge</span></p>
                     <button class="toggle-edge">Switch to Outer Edge</button>
                     <button class="reset-track">Reset</button>
                     <button class="close-loop">Close Loop</button>
                 </div>
 
+                <div id="track-list">
+                    <!-- <div class="track-item">
+                        <h3>Track 1</h3>
+                        <button class="load-track">Load Track</button>
+                        <button class="delete-track">Delete Track</button>
+                    </div> -->
+                </div>
+
             </div>
         </div>
-
-        <script src="game.js"></script>
+    </div>
+    <script src="js/render-engine.js"></script>
+    <script src="js/track-manager.js"></script>
+    <script src="js/simulator.js"></script>
+    <script src="js/game.js"></script>
 </body>
 
 </html>

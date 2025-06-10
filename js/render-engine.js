@@ -87,12 +87,7 @@ class RenderEngine {
   }
 
   drawCar(car) {
-    this.ctx.save();
-    this.ctx.translate(car.x, car.y);
-    this.ctx.rotate(car.angle);
-    this.ctx.fillStyle = car.color;
-    this.ctx.fillRect(-car.width / 2, -car.height / 2, car.width, car.height);
-    this.ctx.restore();
+    car.draw(this.ctx);
   }
 
   clear() {

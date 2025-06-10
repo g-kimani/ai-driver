@@ -236,7 +236,10 @@ class TrackManager {
     }
     const trackList = document.getElementById("track-list");
     trackList.innerHTML = "";
-    this.tracks.forEach((track) => {
+    const sortedTracks = this.tracks.sort((a, b) => {
+      return new Date(b.createdAt) - new Date(a.createdAt);
+    });
+    sortedTracks.forEach((track) => {
       const trackElement = this.createTrackElement(track);
       trackList.appendChild(trackElement);
     });

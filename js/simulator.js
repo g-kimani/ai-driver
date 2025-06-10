@@ -3,18 +3,11 @@ class Simulator {
     this.renderer = renderer;
     this.running = false;
     this.track = null; // Track will be set when running
-    this.car = {
-      x: 100,
-      y: 100,
-      width: 20,
-      height: 10,
-      angle: 0,
-      speed: 0,
-      radius: 10,
-      color: "#0091FF",
-    };
     this.keys = {};
     this.animationId = null; // For future use if needed
+
+    this.cars = [new Car(100, 100, 50, 30, 0)]; // Example car instance
+    this.pilotCar = this.cars[0]; // The car we control
     this.addEventListeners();
   }
 
@@ -33,11 +26,28 @@ class Simulator {
     this.running = true;
     this.track = track;
 
-    this.car.x = track.innerEdge[0].x; // Start at the first point of the inner edge
-    this.car.y = track.innerEdge[0].y; // Start at the first point of the inner edge
-    this.car.angle = 0; // Reset angle to 0
-    this.car.speed = 0; // Reset speed to 0
+    const { position, angle } = this.getStartPosition();
+    this.pilotCar.position = position;
+    this.pilotCar.angle = angle;
+    this.pilotCar.speed = 0; // Reset speed to 0
     this.gameLoop();
+  }
+  getStartPosition() {
+    const i0 = this.track.innerEdge[0];
+    const o0 = this.track.outerEdge[0];
+    const i1 = this.track.innerEdge[1];
+    const o1 = this.track.outerEdge[1];
+
+    const pos = {
+      x: (i0.x + o0.x) / 2,
+      y: (i0.y + o0.y) / 2,
+    };
+
+    const dx = (i1.x + o1.x) / 2 - pos.x;
+    const dy = (i1.y + o1.y) / 2 - pos.y;
+    const angle = Math.atan2(dy, dx);
+
+    return { position: pos, angle };
   }
 
   gameLoop = () => {
@@ -47,7 +57,7 @@ class Simulator {
     this.renderer.clear();
     this.renderer.drawTrack(this.track);
     this.update(this.track);
-    this.renderer.drawCar(this.car);
+    // this.renderer.drawCar(this.car);
     this.animationId = requestAnimationFrame(this.gameLoop);
   };
 
@@ -60,102 +70,54 @@ class Simulator {
     this.running = false;
     cancelAnimationFrame(this.animationId);
     this.animationId = null;
-    this.car.speed = 0; // Reset speed when stopping
-    this.car.color = "#0091FF"; // Reset color when stopping
+    this.pilotCar.reset(); // Reset car state
   }
   setupCarProps() {
-    document.getElementById("carWidth").value = this.car.width;
-    document.getElementById("widthVal").textContent = this.car.width;
-    document.getElementById("carHeight").value = this.car.height;
-    document.getElementById("heightVal").textContent = this.car.height;
-    document.getElementById("carColor").value = this.car.color;
-    document.getElementById("colorVal").textContent = this.car.color;
+    document.getElementById("carWidth").value = this.pilotCar.width;
+    document.getElementById("widthVal").textContent = this.pilotCar.width;
+    document.getElementById("carHeight").value = this.pilotCar.height;
+    document.getElementById("heightVal").textContent = this.pilotCar.height;
+    document.getElementById("carColor").value = this.pilotCar.color;
+    document.getElementById("colorVal").textContent = this.pilotCar.color;
 
     document.getElementById("carWidth").addEventListener("input", (e) => {
-      this.car.width = parseFloat(e.target.value);
-      document.getElementById("widthVal").textContent = this.car.width;
+      this.pilotCar.width = parseFloat(e.target.value);
+      document.getElementById("widthVal").textContent = this.pilotCar.width;
     });
     document.getElementById("carHeight").addEventListener("input", (e) => {
-      this.car.height = parseFloat(e.target.value);
-      document.getElementById("heightVal").textContent = this.car.height;
+      this.pilotCar.height = parseFloat(e.target.value);
+      document.getElementById("heightVal").textContent = this.pilotCar.height;
     });
     document.getElementById("carColor").addEventListener("input", (e) => {
-      this.car.color = e.target.value;
-      document.getElementById("colorVal").textContent = this.car.color;
+      this.pilotCar.color = e.target.value;
+      document.getElementById("colorVal").textContent = this.pilotCar.color;
     });
+  }
+
+  parsePilotCarControls() {
+    this.pilotCar.controls = {
+      up: this.keys["ArrowUp"] || this.keys["w"],
+      down: this.keys["ArrowDown"] || this.keys["s"] || this.keys[" "],
+      left: this.keys["ArrowLeft"] || this.keys["a"],
+      right: this.keys["ArrowRight"] || this.keys["d"],
+    };
+  }
+  setControls(keys) {
+    this.keys = keys;
+    this.parsePilotCarControls();
   }
 
   update(track) {
-    if (this.keys.ArrowUp || this.keys.w) this.car.speed += 0.1;
-    if (this.keys.ArrowDown || this.keys.s) this.car.speed -= 0.1;
-    if (this.keys.ArrowLeft || this.keys.a) this.car.angle -= 0.05;
-    if (this.keys.ArrowRight || this.keys.d) this.car.angle += 0.05;
-
-    // check corners of car are within the track
-    const corners = this.getCarCorners(this.car);
-    let onTrack = true;
-    for (const corner of corners) {
-      const inInner = pointInPolygon(corner, track.innerEdge);
-      const inOuter = pointInPolygon(corner, track.outerEdge);
-      if (!inOuter || inInner) {
-        onTrack = false;
-        break;
-      }
+    this.parsePilotCarControls();
+    for (const car of this.cars) {
+      car.update(track);
+      this.renderer.drawCar(car);
     }
-
-    if (!onTrack) {
-      this.car.speed *= 0.9;
-      this.car.color = "#FF0000"; // Change color to red on collision
-
-      // Optional: visual feedback or reset
-    } else {
-      this.car.color = "#0091FF"; // Reset color to original when on track
-    }
-
-    this.car.speed *= 0.98;
-    this.car.x += Math.cos(this.car.angle) * this.car.speed;
-    this.car.y += Math.sin(this.car.angle) * this.car.speed;
-
-    document.getElementById("speed").textContent = this.car.speed.toFixed(2);
+    document.getElementById("speed").textContent =
+      this.pilotCar.speed.toFixed(2);
     document.getElementById("angle").textContent = (
-      (this.car.angle * (180 / Math.PI)) %
+      (this.pilotCar.angle * (180 / Math.PI)) %
       360
     ).toFixed(1);
   }
-
-  getCarCorners(car) {
-    const cx = car.x;
-    const cy = car.y;
-    const w = car.width;
-    const h = car.height;
-    const a = car.angle;
-
-    const dx = Math.cos(a);
-    const dy = Math.sin(a);
-
-    const hw = w / 2;
-    const hh = h / 2;
-
-    return [
-      { x: cx + dx * hw - dy * hh, y: cy + dy * hw + dx * hh }, // front right
-      { x: cx - dx * hw - dy * hh, y: cy - dy * hw + dx * hh }, // front left
-      { x: cx - dx * hw + dy * hh, y: cy - dy * hw - dx * hh }, // back left
-      { x: cx + dx * hw + dy * hh, y: cy + dy * hw - dx * hh }, // back right
-    ];
-  }
-}
-function pointInPolygon(point, polygon) {
-  let inside = false;
-  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const xi = polygon[i].x,
-      yi = polygon[i].y;
-    const xj = polygon[j].x,
-      yj = polygon[j].y;
-
-    const intersect =
-      yi > point.y !== yj > point.y &&
-      point.x < ((xj - xi) * (point.y - yi)) / (yj - yi + 1e-9) + xi;
-    if (intersect) inside = !inside;
-  }
-  return inside;
 }

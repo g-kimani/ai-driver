@@ -119,5 +119,13 @@ class Simulator {
       (this.pilotCar.angle * (180 / Math.PI)) %
       360
     ).toFixed(1);
+    document.getElementById(
+      "position"
+    ).textContent = `(${this.pilotCar.x.toFixed(1)}, ${this.pilotCar.y.toFixed(
+      1
+    )})`;
+    document.getElementById("drifting").textContent = this.pilotCar.isDrifting
+      ? "Yes"
+      : "No";
   }
 }

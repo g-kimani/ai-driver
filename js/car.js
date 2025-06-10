@@ -18,7 +18,8 @@ class Car {
     this.velX = 0;
     this.velY = 0;
     this.trail = []; // Trail of previous positions
-    this.trailLength = 15; // Maximum length of the trail
+    this.trailLength = 50; // Maximum length of the trail
+    this.isDrifting = false; // Whether the car is currently drifting
 
     this.controls = {
       up: false,
@@ -42,9 +43,10 @@ class Car {
 
   update(track) {
     const ACCELERATION = 0.2;
-    const BRAKE_DECELERATION = 0.3;
+    const BRAKE_DECELERATION = 0.22;
     const MAX_SPEED = 5;
     const TURN_SPEED = 0.05;
+    const FRICTION = 0.95; // Friction factor
 
     // Update angle based on left/right controls
     if (this.controls.left) this.angle -= TURN_SPEED;
@@ -58,14 +60,33 @@ class Car {
     if (this.controls.up) {
       this.velX += forwardX * ACCELERATION;
       this.velY += forwardY * ACCELERATION;
-    } else if (this.controls.down) {
-      // braking / reverse
-      this.velX -= forwardX * BRAKE_DECELERATION;
-      this.velY -= forwardY * BRAKE_DECELERATION;
-    } else {
-      // natural slowdown if no gas/brake
-      this.velX *= 0.95;
-      this.velY *= 0.95;
+      // } else {
+      //   // Apply friction when not accelerating
+      //   this.velX *= FRICTION; // Friction factor
+      //   this.velY *= FRICTION; // Friction factor
+    }
+    const forwardSpeed = this.velX * forwardX + this.velY * forwardY;
+
+    if (this.controls.down) {
+      if (forwardSpeed > 0.1) {
+        // Braking when moving forward
+        this.velX -= forwardX * BRAKE_DECELERATION;
+        this.velY -= forwardY * BRAKE_DECELERATION;
+      } else {
+        // Reversing when stopped or moving backward
+        this.velX -= forwardX * (ACCELERATION * 0.5); // Reverse slower
+        this.velY -= forwardY * (ACCELERATION * 0.5);
+      }
+    }
+
+    if (Math.abs(forwardSpeed) < 0.05) {
+      this.velX = 0;
+      this.velY = 0;
+    }
+
+    if (!this.controls.up && !this.controls.down) {
+      this.velX *= 0.98;
+      this.velY *= 0.98;
     }
 
     // Calculate lateral velocity (perpendicular to forward vector)
@@ -82,6 +103,7 @@ class Car {
       this.controls.down;
 
     if (isDrifting) {
+      this.isDrifting = true;
       this.trail.push({
         x: this.x,
         y: this.y,
@@ -92,6 +114,7 @@ class Car {
         this.trail.shift(); // Remove oldest position
       }
     } else {
+      this.isDrifting = false;
       // Clear trail if not drifting
       this.trail = [];
     }

@@ -9,6 +9,7 @@ class Car {
       brakeDeceleration: 0.3, // Deceleration rate when braking
       maxSpeed: 5, // Maximum speed
       turnSpeed: 0.05, // Turning speed in radians
+      friction: 0.95, // Friction to slow down the car
       width: width, // Width of the car
       height: height, // Height of the car
       color: "#0091FF", // Color of the car
@@ -18,9 +19,10 @@ class Car {
     this.velX = 0;
     this.velY = 0;
     this.trail = []; // Trail of previous positions
-    this.trailLength = 50; // Maximum length of the trail
+    this.trailLength = 15; // Maximum length of the trail
     this.isDrifting = false; // Whether the car is currently drifting
-
+    this.brakeStopTimer = 0;
+    this.isStopping = false;
     this.controls = {
       up: false,
       down: false,
@@ -42,15 +44,9 @@ class Car {
   }
 
   update(track) {
-    const ACCELERATION = 0.2;
-    const BRAKE_DECELERATION = 0.22;
-    const MAX_SPEED = 5;
-    const TURN_SPEED = 0.05;
-    const FRICTION = 0.95; // Friction factor
-
     // Update angle based on left/right controls
-    if (this.controls.left) this.angle -= TURN_SPEED;
-    if (this.controls.right) this.angle += TURN_SPEED;
+    if (this.controls.left) this.angle -= this.settings.turnSpeed;
+    if (this.controls.right) this.angle += this.settings.turnSpeed;
 
     // Calculate forward vector
     const forwardX = Math.cos(this.angle);
@@ -58,35 +54,16 @@ class Car {
 
     // Apply acceleration/braking along forward vector
     if (this.controls.up) {
-      this.velX += forwardX * ACCELERATION;
-      this.velY += forwardY * ACCELERATION;
-      // } else {
-      //   // Apply friction when not accelerating
-      //   this.velX *= FRICTION; // Friction factor
-      //   this.velY *= FRICTION; // Friction factor
-    }
-    const forwardSpeed = this.velX * forwardX + this.velY * forwardY;
-
-    if (this.controls.down) {
-      if (forwardSpeed > 0.1) {
-        // Braking when moving forward
-        this.velX -= forwardX * BRAKE_DECELERATION;
-        this.velY -= forwardY * BRAKE_DECELERATION;
-      } else {
-        // Reversing when stopped or moving backward
-        this.velX -= forwardX * (ACCELERATION * 0.5); // Reverse slower
-        this.velY -= forwardY * (ACCELERATION * 0.5);
-      }
-    }
-
-    if (Math.abs(forwardSpeed) < 0.05) {
-      this.velX = 0;
-      this.velY = 0;
-    }
-
-    if (!this.controls.up && !this.controls.down) {
-      this.velX *= 0.98;
-      this.velY *= 0.98;
+      this.velX += forwardX * this.settings.acceleration;
+      this.velY += forwardY * this.settings.acceleration;
+    } else if (this.controls.down) {
+      // braking / reverse
+      this.velX -= forwardX * this.settings.brakeDeceleration;
+      this.velY -= forwardY * this.settings.brakeDeceleration;
+    } else {
+      // natural slowdown if no gas/brake
+      this.velX *= this.settings.friction;
+      this.velY *= this.settings.friction;
     }
 
     // Calculate lateral velocity (perpendicular to forward vector)
@@ -104,6 +81,7 @@ class Car {
 
     if (isDrifting) {
       this.isDrifting = true;
+      // Apply lateral force to simulate drifting
       this.trail.push({
         x: this.x,
         y: this.y,
@@ -131,22 +109,28 @@ class Car {
 
     // Limit max speed
     const speed = Math.sqrt(this.velX * this.velX + this.velY * this.velY);
-    if (speed > MAX_SPEED) {
-      this.velX = (this.velX / speed) * MAX_SPEED;
-      this.velY = (this.velY / speed) * MAX_SPEED;
+    if (speed > this.settings.maxSpeed) {
+      this.velX = (this.velX / speed) * this.settings.maxSpeed;
+      this.velY = (this.velY / speed) * this.settings.maxSpeed;
     }
 
     // Update position by velocity
     this.x += this.velX;
     this.y += this.velY;
 
+    if (!this.isOnTrack(track)) {
+      this.settings.color = "#FF0000"; // Change color to red if off track
+    } else {
+      this.settings.color = "#0091FF"; // Reset color to original if on track
+    }
+
     // Update speed property for display
     this.speed = speed;
   }
 
   getCorners() {
-    const hw = this.width / 2;
-    const hh = this.height / 2;
+    const hw = this.settings.width / 2;
+    const hh = this.settings.height / 2;
     const dx = Math.cos(this.angle);
     const dy = Math.sin(this.angle);
 

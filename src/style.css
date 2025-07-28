@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+:root {
+  --primary-color: #0ff;
+  --secondary-color: #111;
+  --accent-color: #222;
+  --text-color: #eee;
+  --track-bg: #323232;
+}
+.hud-tab {
+  @apply w-full font-bold text-lg px-5 py-2.5 text-white bg-[#457B9D] border-2 border-[#FBFBFF] hover:text-black hover:bg-[#FBFBFF] hover:border-[#023047] cursor-pointer transition-all uppercase;
+}
+.hud-tab.active-tab {
+  @apply bg-amber-300;
+}
+
+.tab-header {
+  @apply inline-flex items-center justify-center p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 cursor-pointer;
+}
+
+.tab-header.active-tab {
+  @apply text-amber-300 border-amber-300;
+}
+
+.simple-btn {
+  @apply cursor-pointer uppercase text-gray-900 bg-white border border-gray-300  hover:bg-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600;
+}
+
+.simple-btn:disabled {
+  @apply bg-slate-500 text-slate-300;
+}
+
+.toggle-btn {
+  @apply cursor-pointer uppercase bg-slate-300 text-white border-white border-2 hover:border-[#E63946] px-4 py-2.5 transition-all rounded-full;
+}
+
+.toggle-btn.active {
+  @apply bg-slate-800;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* body {
+  background: var(--secondary-color);   
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  color: var(--text-color);
+} */
+
+/* .content {
+  display: flex;
+  flex-wrap: wrap;
+  /* min-height: 100vh; */
+/* padding: 20px; */
+/* } */
+
+/* #game {
+  background: #00c535;
+  /* border: 2px solid var(--primary-color); */
+/* border-radius: 10px; */
+/* flex-grow: 1; */
+/* width: 70vw; 70% of viewport width by default */
+/* height: auto; */
+/* max-width: 70%; */
+/* margin: 20px 0; */
+/* } */
+
+/* 
+.stat {
+  padding: 5px 10px;
+  background: #333;
+  border-radius: 6px;
+  border: 1px solid #0ff4;
+}
+
+.tabs > button {
+  padding: 10px;
+  background: #444;
+  border: none;
+  color: #eee;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.tabs > button:hover {
+  background: #555;
+}
+
+.tabs > button.active {
+  background: #efefef;
+  color: #111;
+  font-weight: bold;
+}
+/* 
+.tab-content {
+  display: none;
+  padding: 10px 20px;
+  background: var(--accent-color);
+  border-radius: 10px;
+} */
+/* 
+.tab-content.active {
+  display: block;
+}
+
+.active-tab {
+  @apply text-gray-600 border-gray-300 dark:text-gray-300;
+}
+
+.property {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+#track-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+#track-list {
+  max-height: 400px;
+  overflow-y: auto;
+  background: #222;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.track {
+  margin: 20px;
+  border: 2px solid white;
+  padding: 8px;
+  box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+  background-color: #2e2e2e;
+}
+
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  margin: 8px 0;
+}
+.editor-header button {
+  margin: auto;
+}
+
+button {
+  padding: 6px 12px;
+  background: #0ff2;
+  border: 1px solid #0ff6;
+  color: #eee;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #555;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.hidden {
+  display: none !important;
+} */

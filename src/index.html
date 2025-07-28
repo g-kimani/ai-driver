@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Racing Game</title>
+    <link rel="stylesheet" href="./output.css">
+    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div class="flex ">
+        <section class="p-2 h-screen bg-[#A8DADC]">
+            <canvas id="game" class="bg-(--track-bg) grow w-[70vw] h-auto max-w-[70vw] rounded-md"></canvas>
+        </section>
+        <section id="hud-tabs" data-forTab="hud"
+            class="flex flex-col grow-0 w-[30vw] p-2 h-screen max-h-screen bg-[#F1FAEE]">
+            <div class="tabs-header h-max" data-forTab="hud">
+                <div class="flex place-content-center gap-6 p-4 bg-[#023047] rounded-lg">
+                    <button id="simulator-btn" title="Play your tracks" data-forTab="hud" data-tab="1"
+                        class="hud-tab">Simulator</button>
+                    <button id="editor-btn" title="Edit your tracks" data-forTab="hud" data-tab="2"
+                        class="hud-tab">Track
+                        Editor</button>
+                </div>
+            </div>
+            <div class="tab-content grow mt-2 overflow-hidden" data-forTab="hud">
+                <!-- SIMULATOR -->
+                <div class="tab bg-[#023047] rounded-lg h-full" data-tab="1" data-forTab="hud">
+                    <section id="simulator-tabs" class="h-full flex flex-col" data-forTab="simulator">
+                        <div class="tabs-header" data-forTab="simulator">
+                            <div
+                                class="flex justify-center text-sm font-medium text-center text-gray-500 dark:text-gray-400">
+                                <p data-tab="1" href="#" class="tab-header" data-forTab="simulator">
+                                    🚗 Properties
+                                </p>
+                                <div class="w-[2px] bg-gray-400 mx-2 my-4"></div>
+                                <p data-tab="2" href="#" class="tab-header" data-forTab="simulator">
+                                    🤖 AI
+                                </p>
+
+                            </div>
+                        </div>
+                        <div class="tab-content flex flex-col grow" data-forTab="simulator">
+                            <div class="tab" data-forTab="simulator" data-tab="1">
+                                <div class="flex justify-end my-4">
+                                    <button id="startPosition" title="send car to start"
+                                        class="simple-btn">Restart</button>
+                                    <button id="resetCar" title="reset all car properties"
+                                        class="simple-btn">Reset</button>
+                                </div>
+                                <div class="m-4 rounded-lg bg-gray-200 border-gray-600 px-8 py-4">
+                                    <h5 class="text-2xl font-bold">Stats</h5>
+                                    <div class="flex justify-between items-center font-semibold">
+                                        <p>Speed</p>
+                                        <div class="text-white bg-gray-500 border-black w-1/3 px-4 py-2 rounded-full">
+                                            80
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center font-semibold my-2">
+                                        <p>Angle</p>
+                                        <div class="text-white bg-gray-500 border-black w-1/3 px-4 py-2 rounded-full">
+                                            80
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-between items-center font-semibold my-2">
+                                        <p>Average Lap</p>
+                                        <div class="text-white bg-gray-500 border-black w-1/3 px-4 py-2 rounded-full">
+                                            80
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="m-4 rounded-lg bg-gray-200 border-gray-600 px-8 py-4">
+                                    <div class="flex justify-between">
+                                        <h5 class="text-2xl font-bold">Properties</h5>
+                                        <button id="editCar" title="Edit car properties"
+                                            class="simple-btn">Edit</button>
+                                    </div>
+                                    <div class="">
+                                        <div class=" text-sm font-light flex justify-end">
+                                            <p>min 10 - max 40</p>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <p>Max Speed</p>
+                                            <div class="flex">
+                                                <button id="incSpeed" title="increment speed"
+                                                    class="simple-btn">+</button>
+                                                <button id="decSpeed" title="increment speed"
+                                                    class="simple-btn">-</button>
+                                                <div
+                                                    class="text-white bg-gray-500 border-black w-1/3 px-4 py-2 rounded-lg flex place-items-center">
+                                                    <p>80</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center my-1">
+                                            <p>Acceleration</p>
+                                            <div class="flex">
+                                                <button id="incSpeed" title="increment speed"
+                                                    class="simple-btn">+</button>
+                                                <button id="decSpeed" title="increment speed"
+                                                    class="simple-btn">-</button>
+                                                <div
+                                                    class="text-white bg-gray-500 border-black w-1/3 px-4 py-2 rounded-lg flex place-items-center">
+                                                    <p>20</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-between items-center my-1">
+                                            <p>Colour</p>
+                                            <input type="color" id="carColor" title="color" value="#ff0000"
+                                                class="w-1/3 h-8 rounded-full">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab hidden" data-forTab="simulator" data-tab="2">
+                                <h2>Ai</h2>
+                            </div>
+
+                        </div>
+                    </section>
+                </div>
+                <!-- TRACK MANAGER -->
+                <div class="tab hidden h-full p-2 grow-0" data-forTab="hud" data-tab="2">
+                    <div class=" px-4 py-8 rounded-lg bg-slate-700 h-full">
+                        <div id="editorHome" class="flex flex-col h-full overflow-auto">
+                            <div id="newTrack"
+                                class="flex flex-col items-center justify-center w-full h-40 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                <p class=" text-gray-500 dark:text-gray-400 text-4xl">+</p>
+                                <p class="mb-2 text-sm text-gray-500 dark:text-gray-400 font-semibold">Create new
+                                    track...
+                                </p>
+                            </div>
+                            <div id="mainTrackList" class="flex flex-col overflow-auto">
+                                <!-- <div class="flex flex-col grow max-h-max px-4 py-2  w-full bg-amber-200">
+                                    <h3>Track Name</h3>
+                                    <div class="flex justify-between w-full">
+                                        <div class="w-full h-full bg-amber-700"></div>
+                                        <div class="flex flex-col">
+                                            <button id="fav" title="Favourite track" class="toggle-btn"
+                                                data-active="true">
+                                                Favourite
+                                            </button>
+                                            <button id="def" title="Make track default on load" class="toggle-btn"
+                                                data-active="true">
+                                                Make default
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-around">
+                                        <button id="play" title="Play track in sim" class="simple-btn">Play</button>
+                                        <button id="edit" title="edit track in sim" class="simple-btn">edit</button>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col grow max-h-max px-4 py-2  w-full bg-amber-200">
+                                    <h3>Track Name</h3>
+                                    <div class="flex justify-between w-full">
+                                        <div class="w-full h-full bg-amber-700"></div>
+                                        <div class="flex flex-col">
+                                            <button id="fav" title="Favourite track" class="toggle-btn"
+                                                data-active="true">
+                                                Favourite
+                                            </button>
+                                            <button id="def" title="Make track default on load" class="toggle-btn"
+                                                data-active="true">
+                                                Make default
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-around">
+                                        <button id="play" title="Play track in sim" class="simple-btn">Play</button>
+                                        <button id="edit" title="edit track in sim" class="simple-btn">edit</button>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col grow max-h-max px-4 py-2  w-full bg-amber-200">
+                                    <h3>Track Name</h3>
+                                    <div class="flex justify-between w-full">
+                                        <div class="w-full h-full bg-amber-700"></div>
+                                        <div class="flex flex-col">
+                                            <button id="fav" title="Favourite track" class="toggle-btn"
+                                                data-active="true">
+                                                Favourite
+                                            </button>
+                                            <button id="def" title="Make track default on load" class="toggle-btn"
+                                                data-active="true">
+                                                Make default
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="flex justify-around">
+                                        <button id="play" title="Play track in sim" class="simple-btn">Play</button>
+                                        <button id="edit" title="edit track in sim" class="simple-btn">edit</button>
+                                    </div>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div id="editorHub" class="flex flex-col h-full">
+                            <div class="h-full overflow-hidden">
+                                <div class="flex justify-around">
+                                    <button id="resetTrack" title="reset all track properties"
+                                        class="simple-btn bg-amber-600!">Reset
+                                    </button>
+                                    <button id="saveTrack" title="save all track properties"
+                                        class="simple-btn bg-blue-400!">save
+                                    </button>
+                                    <button id="cancelTrack" title="cancel editing"
+                                        class="simple-btn bg-red-600!">Cancel</button>
+                                </div>
+                                <div class="overflow-auto h-full">
+                                    <div id="liveInfoPanel"
+                                        class="my-4 py-4 px-4 border-2 rounded-lg bg-slate-200 border-slate-400">
+                                        <h3 class="text-2xl font-extrabold text-gray-600">Live Info</h3>
+                                        <div class="flex items-center justify-between">
+                                            <p>Mouse Position</p>
+                                            <div class="flex flex-nowrap gap-2 ">
+                                                <div class="flex items-center gap-1">
+                                                    <p class="font-semibold">X:</p>
+                                                    <span id="mouseX"
+                                                        class="bg-slate-300 text-gray-600 px-2 py-1 font-extrabold rounded-lg w-18">190</span>
+                                                </div>
+                                                <div class="flex items-center gap-1">
+                                                    <p class="font-semibold">Y:</p>
+                                                    <span id="mouseY"
+                                                        class="bg-slate-300 text-gray-600 px-2 py-1 font-extrabold rounded-lg w-18">190</span>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="flex items-center gap-2 py-2">
+                                            <p>Selected</p>
+                                            <div id="selectedIndicator"
+                                                class="size-5 bg-amber-400 border-2 border-slate-600 rounded-full">
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between py-2">
+                                            <p>Type</p>
+                                            <div id="selectedType"
+                                                class="w-1/3 text-amber-300 bg-slate-700 border-amber-300 border-2 text-center">
+                                                Anchor
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between py-2">
+                                            <p>Position</p>
+                                            <div class="flex flex-nowrap gap-2 ">
+                                                <div class="flex items-center gap-1">
+                                                    <p class="font-semibold">X:</p>
+                                                    <span id="selectedX"
+                                                        class="bg-slate-300 text-gray-600 px-2 py-1 font-extrabold rounded-lg w-18">190</span>
+                                                </div>
+                                                <div class="flex items-center gap-1">
+                                                    <p class="font-semibold">Y:</p>
+                                                    <span id="selectedY"
+                                                        class="bg-slate-300 text-gray-600 px-2 py-1 font-extrabold rounded-lg w-18">190</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="flex justify-around">
+                                            <button id="deleteSelected" title="deleted"
+                                                class="simple-btn">Delete</button>
+                                            <button id="transformSelected" title="transformd"
+                                                class="simple-btn">Transform</button>
+                                        </div>
+                                    </div>
+                                    <div id="trackSettingsPanel"
+                                        class="my-4 py-4 px-8 border-2 rounded-lg bg-slate-200 border-slate-400">
+                                        <h3 class="text-2xl font-extrabold text-gray-600">Track Settings</h3>
+                                        <div class="flex justify-between items-center my-1">
+                                            <p>Name</p>
+                                            <input type="text" id="trackName" title="Track Name"
+                                                placeholder="Enter track name..."
+                                                class="bg-slate-300 border border-gray-300 text-gray-600 text-sm font-semibold rounded-lg  block  p-2.5    ">
+                                        </div>
+                                        <div class="flex justify-between items-center my-1">
+                                            <p>Colour</p>
+                                            <input type="color" id="trackColor" title="color" value="#ff0000"
+                                                class="w-1/3 h-8 rounded-full">
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <p>Width</p>
+                                            <!-- <div class="flex">
+                                                <button id="incWidth" title="increment Width"
+                                                    class="simple-btn">+</button>
+                                                <button id="decWidth" title="decrement Width"
+                                                    class="simple-btn">-</button>
+                                                <div id=""
+                                                    class="text-white bg-gray-500 border-black w-1/3 px-4 py-2 rounded-lg flex place-items-center">
+                                                    <p>80</p>
+                                                </div>
+                                            </div> -->
+                                            <div class="flex">
+                                                <label for="trackWidth" id="widthDisplay">80</label>
+                                                <input id="trackWidth" title="Track Width" type="range" value="80"
+                                                    min="10" max="150" step="1" />
+                                            </div>
+                                        </div>
+                                        <h4 class="text-xl font-extrabold text-gray-600">Draw Options</h4>
+                                        <div id="trackDrawOptions" class="flex flex-wrap justify-between">
+                                            <!-- <button title="toggle" class="toggle-btn">Fill</button>
+                                            <button title="toggle" class="toggle-btn">Fill</button>
+                                            <button title="toggle" class="toggle-btn">Fill</button>
+                                            <button title="toggle" class="toggle-btn">Fill</button> -->
+                                        </div>
+                                    </div>
+                                    <div id="trackInfoPanel"
+                                        class="my-4 py-4 px-4 border-2 rounded-lg bg-slate-200 border-slate-400">
+                                        <h3 class="text-2xl font-extrabold text-gray-600">Track Info</h3>
+                                        <div class="flex items-center justify-between">
+                                            <p class="font-semibold">Num of points:</p>
+                                            <span id="numOfPoints"
+                                                class="bg-slate-300 text-gray-600 px-2 py-1 font-extrabold rounded-lg w-1/3">190</span>
+                                        </div>
+                                        <div class="flex items-center justify-between my-1">
+                                            <p class="font-semibold">Num of Segments:</p>
+                                            <span id="numOfSegments"
+                                                class="bg-slate-300 text-gray-600 px-2 py-1 font-extrabold rounded-lg w-1/3">23</span>
+                                        </div>
+                                        <div class="flex items-center justify-between my-1">
+                                            <p class="font-semibold">Length of track:</p>
+                                            <span id="trackLength"
+                                                class="bg-slate-300 text-gray-600 px-2 py-1 font-extrabold rounded-lg w-1/3">190</span>
+                                        </div>
+                                        <div id="info-tabs" data-forTab="info">
+                                            <div data-forTab="info"
+                                                class="tabs-header flex justify-center text-sm font-medium text-center text-gray-500 dark:text-gray-400">
+                                                <p data-tab="1" class="tab-header" data-forTab="info">
+                                                    Segments
+                                                </p>
+                                                <div class="w-[2px] bg-gray-400 mx-2 my-4"></div>
+                                                <p data-tab="2" class="tab-header" data-forTab="info">
+                                                    Points
+                                                </p>
+                                            </div>
+                                            <div class="tab-content flex flex-col grow" data-forTab="info">
+                                                <div id="trackSegmentList" class="tab" data-forTab="info" data-tab="1">
+                                                    <div class="bg-slate-300 px-4 py-2 my-2 rounded-2xl">
+
+                                                        <div class="flex flex-nowrap gap-1 justify-center">
+                                                            <div class="flex flex-col items-center gap-2">
+                                                                <h5 class=" text-sm font-semibold text-amber-700">Start
+                                                                    <span>🎯</span>
+                                                                </h5>
+                                                                <div
+                                                                    class="flex flex-nowrap px-2 py-1 gap-2 text-xs font-semibold rounded-lg border-gray-600 border-2 bg-slate-300 text-gray-600 ">
+                                                                    <div class="flex flex-col">
+                                                                        <p>X:</p>
+                                                                        <p>Y:</p>
+                                                                    </div>
+                                                                    <div class="h-full p-px bg-slate-700"></div>
+
+                                                                    <div class="flex flex-col">
+                                                                        <p>120</p>
+                                                                        <p>120</p>
+                                                                    </div>
+
+
+                                                                </div>
+                                                            </div>
+                                                            >
+                                                            <div class="flex flex-col items-center gap-2">
+                                                                <h5 class=" text-sm font-light text-blue-700">Control
+                                                                    <span>🎯</span>
+                                                                </h5>
+                                                                <div
+                                                                    class="flex flex-nowrap px-2 py-1 gap-2 text-xs font-semibold rounded-lg border-gray-600 border-2 bg-slate-300 text-gray-600 ">
+                                                                    <div class="flex flex-col">
+                                                                        <p>X:</p>
+                                                                        <p>Y:</p>
+                                                                    </div>
+                                                                    <div class="h-full p-px bg-slate-700"></div>
+
+                                                                    <div class="flex flex-col">
+                                                                        <p>120</p>
+                                                                        <p>120</p>
+                                                                    </div>
+
+
+                                                                </div>
+                                                            </div>
+                                                            >
+                                                            <div class="flex flex-col items-center gap-2">
+                                                                <h5 class=" text-sm font-light text-amber-700">End
+                                                                    <span>🎯</span>
+                                                                </h5>
+                                                                <div
+                                                                    class="flex flex-nowrap px-2 py-1 gap-2 text-xs font-semibold rounded-lg border-gray-600 border-2 bg-slate-300 text-gray-600 ">
+                                                                    <div class="flex flex-col">
+                                                                        <p>X:</p>
+                                                                        <p>Y:</p>
+                                                                    </div>
+                                                                    <div class="h-full p-px bg-slate-700"></div>
+
+                                                                    <div class="flex flex-col">
+                                                                        <p>120</p>
+                                                                        <p>120</p>
+                                                                    </div>
+
+
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="flex justify-between items-center my-1">
+                                                            <p>Colour</p>
+                                                            <input type="color" id="trackColor" title="color"
+                                                                value="#ff0000" class="w-1/3 h-8 rounded-full">
+                                                        </div>
+                                                        <div class="flex justify-between items-center">
+                                                            <p>Width</p>
+                                                            <div class="flex">
+                                                                <button id="incSpeed" title="increment speed"
+                                                                    class="simple-btn">+</button>
+                                                                <button id="decSpeed" title="increment speed"
+                                                                    class="simple-btn">-</button>
+                                                                <div
+                                                                    class="text-white bg-gray-500 border-black w-1/3 px-4 py-2 rounded-lg flex place-items-center">
+                                                                    <p>80</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                <div id="trackPointList" class="tab hidden" data-forTab="info"
+                                                    data-tab="2">
+                                                    <!-- <div 
+                                                        class="w-full px-4 py-2 my-2 bg-slate-300 rounded-2xl">
+                                                        <div class="flex justify-between items-center">
+                                                            <div class="flex flex-nowrap items-center gap-4">
+                                                                <h5 class="text-lg font-semibold">Point #1</h5>
+                                                                <span
+                                                                    class="size-6 bg-amber-600 border-slate-400 border-2 rounded-full"></span>
+                                                            </div>
+                                                            <div class="flex flex-nowrap items-center gap-4">
+                                                                <button title="focus point"
+                                                                    class="simple-btn rounded-full">🎯</button>
+                                                                <button title="delete point"
+                                                                    class="simple-btn rounded-full">🗑️</button>
+                                                            </div>
+                                                        </div>
+                                                        <div class="flex items-center justify-between">
+                                                            <p>Position</p>
+                                                            <div class="flex flex-nowrap gap-2 ">
+                                                                <div class="flex items-center gap-1">
+                                                                    <p class="font-semibold">X:</p>
+                                                                    <span
+                                                                        class="bg-slate-300 text-gray-600 px-2 py-1 font-extrabold rounded-lg w-18">190</span>
+                                                                </div>
+                                                                <div class="flex items-center gap-1">
+                                                                    <p class="font-semibold">Y:</p>
+                                                                    <span
+                                                                        class="bg-slate-300 text-gray-600 px-2 py-1 font-extrabold rounded-lg w-18">190</span>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="flex items-center justify-between py-2">
+                                                            <p>Type</p>
+                                                            <div
+                                                                class="w-1/3 text-amber-300 bg-slate-700 border-amber-300 border-2 text-center">
+                                                                <p>Anchor</p>
+                                                            </div>
+                                                        </div> 
+                                                    </div> -->
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    </div>
+    <script src="js/event_handler.js"></script>
+    <script src="js/tab_controller.js"></script>
+    <!-- 
+        <script src="js/simulator_ui.js"></script>
+        -->
+    <script src="js/car.js"></script>
+    <script src="js/simulator.js"></script>
+    <script src="js/track/track_editor.js"></script>
+    <script src="js/track/designer_ui.js"></script>
+    <script src="js/track/track_manager.js"></script>
+    <script src="js/render-engine.js"></script>
+    <script src="js/game.js"></script>
+</body>
+
+</html>

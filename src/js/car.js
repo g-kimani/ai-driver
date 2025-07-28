@@ -114,18 +114,42 @@ class Car {
       this.velY = (this.velY / speed) * this.settings.maxSpeed;
     }
 
-    // Update position by velocity
-    this.x += this.velX;
-    this.y += this.velY;
+    // Check if car is on track
+    const onTrack = this.isOnTrack(track);
 
-    if (!this.isOnTrack(track)) {
+    // Set color based on track status
+    if (!onTrack) {
       this.settings.color = "#FF0000"; // Change color to red if off track
     } else {
       this.settings.color = "#0091FF"; // Reset color to original if on track
     }
 
+    // Limit speed based on track status
+    const maxSpeed = onTrack
+      ? this.settings.maxSpeed
+      : this.settings.maxSpeed * 0.4;
+    if (speed > maxSpeed) {
+      this.velX = (this.velX / speed) * maxSpeed;
+      this.velY = (this.velY / speed) * maxSpeed;
+    }
+
+    // Update position by velocity
+    this.x += this.velX;
+    this.y += this.velY;
+
+    // Update speed property for display
+    this.speed = Math.sqrt(this.velX * this.velX + this.velY * this.velY);
+
+    // Update position by velocity
+    this.x += this.velX;
+    this.y += this.velY;
+
     // Update speed property for display
     this.speed = speed;
+  }
+
+  setColor(color) {
+    this.settings.color = color;
   }
 
   getCorners() {
@@ -142,15 +166,21 @@ class Car {
     ];
   }
   isOnTrack(track) {
+    if (!track) return false;
     const corners = this.getCorners();
     for (const corner of corners) {
-      const inInner = pointInPolygon(corner, track.innerEdge);
-      const inOuter = pointInPolygon(corner, track.outerEdge);
-      if (!inOuter || inInner) {
-        return false; // At least one corner is off the track
+      if (!this.pointOnCollisionMap(track, corner)) {
+        return false; // If any corner is off the collision map, car is off track
       }
     }
     return true; // All corners are on the track
+  }
+  pointOnCollisionMap(track, point) {
+    const colMap = track.collisionMap;
+    if (!colMap) return false;
+    const x = Math.floor(point.x / 4);
+    const y = Math.floor(point.y / 4);
+    return colMap?.[y] && colMap[y]?.[x] === 1;
   }
   draw(ctx) {
     // Draw trail first (so car is on top)
@@ -194,17 +224,17 @@ class Car {
     const forwardX = cos;
     const forwardY = sin;
 
-    const dot = this.vx * forwardX + this.vy * forwardY;
-    const lateralX = this.vx - dot * forwardX;
-    const lateralY = this.vy - dot * forwardY;
+    const dot = this.velX * forwardX + this.velY * forwardY;
+    const lateralX = this.velX - dot * forwardX;
+    const lateralY = this.velY - dot * forwardY;
 
     // Draw full velocity vector
     ctx2.beginPath();
     ctx2.moveTo(this.x, this.y);
     ctx2.strokeStyle = "blue";
     ctx2.lineTo(
-      this.x + this.vx * speedVecScale,
-      this.y + this.vy * speedVecScale
+      this.x + this.velX * speedVecScale,
+      this.y + this.velY * speedVecScale
     );
     ctx2.stroke();
 
